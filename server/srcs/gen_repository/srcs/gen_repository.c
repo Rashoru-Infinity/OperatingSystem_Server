@@ -12,7 +12,7 @@ static char *get_path(char *reponame)
 	if (!(full = calloc(strlen(home) * strlen(reponame) + 2, sizeof(char))))
 		return (NULL);
 	strcpy(full, home);
-	strncat(full, "/", strlen("/"));
+	strncat(full, "/repo/", strlen("/repo/"));
 	strncat(full, reponame, strlen(reponame));
 	return (full);
 }
