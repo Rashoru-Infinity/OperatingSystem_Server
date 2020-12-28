@@ -2,10 +2,10 @@ CC	= gcc
 CFLAGS	= -Wall -Wextra -Werror
 SRCS	= srcs/main.c srcs/request.c srcs/send_hash.c
 OBJS	= $(SRCS:.c=.o)
-INCLUDES	= -Iincludes -I$(MD5)/includes -I$(READFILE)/includes
-MD5	= ../lib/md5
+INCLUDES	= -Iincludes -I$(SHA256)/includes -I$(READFILE)/includes
+SHA256	= ../lib/sha256
 READFILE	= ../lib/read_file
-LINK	= -L ../lib/read_file/ -lreadfile -L ../lib/md5 -latomd5 -lcrypto
+LINK	= -L ../lib/read_file/ -lreadfile -L ../lib/sha256 -latoSHA256 -lcrypto
 NAME	= git_client
 RM	= rm -f
 
@@ -15,17 +15,17 @@ all	:	$(NAME)
 	$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@
 
 $(NAME)	:	$(OBJS)
-	$(MAKE) -C ../lib/md5 all
+	$(MAKE) -C ../lib/sha256 all
 	$(MAKE) -C ../lib/read_file all
 	$(CC) $(CFLAGS) $(INCLUDES) -o $(NAME) $(OBJS) $(LINK)
 
 clean	:
-	$(MAKE) -C ../lib/md5 clean
+	$(MAKE) -C ../lib/sha256 clean
 	$(MAKE) -C ../lib/read_file clean
 	$(RM) $(OBJS)
 
 fclean	:	clean
-	$(MAKE) -C ../lib/md5 fclean
+	$(MAKE) -C ../lib/sha256 fclean
 	$(MAKE) -C ../lib/read_file fclean
 	$(RM) $(NAME)
 

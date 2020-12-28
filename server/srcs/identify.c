@@ -1,8 +1,7 @@
 #include <sys/stat.h>
 #include <stdlib.h>
 #include <string.h>
-#include "read_file.h"
-#include "md5.h"
+#include "server.h"
 
 int	identify(const char *hash)
 {
@@ -32,7 +31,7 @@ int	identify(const char *hash)
 		free(full);
 		return (-1);
 	}
-	if (!(content_hash = atomd5(content)))
+	if (!(content_hash = atoSHA256(content)))
 	{
 		free(full);
 		free(content);

@@ -38,7 +38,7 @@ int main(int argc, char **argv)
 		perror("read_file\n");
 		exit(1);
 	}
-	if (!(hash_value = atomd5(content)))
+	if (!(hash_value = atoSHA256(content)))
 	{
 		perror("atomd5\n");
 		exit(1);

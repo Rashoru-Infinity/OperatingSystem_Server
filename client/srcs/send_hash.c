@@ -25,5 +25,6 @@ int	send_hash(int sockfd, const char *hash)
 		free(msg);
 		return (-1);
 	}
+	free(msg);
 	return (status);
 }

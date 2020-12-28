@@ -2,10 +2,10 @@ CC	= gcc
 CFLAGS	= -Wall -Wextra -Werror
 AR	= ar
 AFLAGS	= -rcs
-SRCS	= srcs/atomd5.c
+SRCS	= srcs/atoSHA256.c
 OBJS	= $(SRCS:.c=.o)
 INCLUDES	= -Iincludes
-NAME	= libatomd5.a
+NAME	= libatoSHA256.a
 RM	= rm -f
 
 all	:	$(NAME)

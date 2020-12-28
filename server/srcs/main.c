@@ -91,6 +91,8 @@ int main(int argc, char **argv)
 					if (send(new_sockfd, buf, DEFAULT_SIZE + 1, 0) < 0)
 						exit(1);
 					bzero(buf, DEFAULT_SIZE + 1);
+					free(repodir);
+					repodir = NULL;
 				}
 				break;
 			case -1:
