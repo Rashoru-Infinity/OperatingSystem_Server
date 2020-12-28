@@ -19,13 +19,13 @@ $(NAME)	:	$(OBJS)
 	$(CC) $(CFLAGS) $(INCLUDES) -o $(NAME) $(OBJS) $(LINK)
 
 clean	:
-	$(MAKE) -C srcs/repository clean
+	$(MAKE) -C srcs/gen_repository clean
 	$(MAKE) -C srcs/md5 clean
 	$(MAKE) -C srcs/read_file clean
 	$(RM) $(OBJS)
 
 fclean	:	clean
-	$(MAKE) -C srcs/repository fclean
+	$(MAKE) -C srcs/gen_repository fclean
 	$(MAKE) -C srcs/md5 fclean
 	$(MAKE) -C srcs/read_file fclean
 	$(RM) $(NAME)

@@ -65,7 +65,7 @@ int main(int argc, char **argv)
 				if (identify(buf) < 0)
 				{
 					bzero(buf, DEFAULT_SIZE + 1);
-					memcpy(buf, "fail", strlen("fail"));
+					strcpy(buf, "fail");
 					send(new_sockfd, buf, DEFAULT_SIZE + 1, 0);
 					exit(0);
 				}
@@ -76,12 +76,18 @@ int main(int argc, char **argv)
 				while (recv(new_sockfd, buf, DEFAULT_SIZE + 1, 0) > 0)
 				{
 					buf[DEFAULT_SIZE] = '\0';
-					if (strcmp(buf, "exit\n") != 0)
-						break;
+					if (strcmp(buf, "exit") == 0)
+					{
+						printf("disconnected\n");
+						exit(0);
+					}
 					if (!(repodir = gen_repository(buf)))
+					{
+						perror("fail to generate repository\n");
 						exit(1);
+					}
 					bzero(buf, DEFAULT_SIZE + 1);
-					memcpy(buf, repodir, strlen(repodir));
+					strcpy(buf, repodir);
 					if (send(new_sockfd, buf, DEFAULT_SIZE + 1, 0) < 0)
 						exit(1);
 					bzero(buf, DEFAULT_SIZE + 1);

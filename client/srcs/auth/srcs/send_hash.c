@@ -4,14 +4,17 @@
 
 int	send_hash(int sockfd, const char *hash)
 {
-	int		status;
-	char	*msg;
+	int			status;
+	char		*msg;
+	const int	DEFAULT_SIZE = 256;
 
-	if(!(msg = malloc((strlen("success") + 1) * sizeof(char))))
+	if(!(msg = calloc(DEFAULT_SIZE + 1, sizeof(char))))
 		return (-1);
-	if ((status = send(sockfd, hash, strlen(hash), 0)) < 0)
+	strcpy(msg, hash);
+	if ((status = send(sockfd, msg, DEFAULT_SIZE + 1, 0)) < 0)
 		return (status);
-	if ((status = recv(sockfd, msg, strlen("success"), 0)) < 0)
+	bzero(msg, DEFAULT_SIZE + 1);
+	if ((status = recv(sockfd, msg, DEFAULT_SIZE + 1, 0)) < 0)
 	{
 		free(msg);
 		return (-1);

@@ -54,5 +54,7 @@ int main(int argc, char **argv)
 		exit(1);
 	}
 	close(sockfd);
+	free(content);
+	free(hash_value);
 	return (0);	
 }
