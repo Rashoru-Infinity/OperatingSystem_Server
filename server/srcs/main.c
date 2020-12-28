@@ -81,13 +81,12 @@ int main(int argc, char **argv)
 						printf("disconnected\n");
 						exit(0);
 					}
-					if (!(repodir = gen_repository(buf)))
-					{
-						perror("fail to generate repository\n");
-						exit(1);
-					}
+					repodir = gen_repository(buf);
 					bzero(buf, DEFAULT_SIZE + 1);
-					strcpy(buf, repodir);
+					if (repodir)
+						strcpy(buf, repodir);
+					else
+						strcpy(buf, "fail to generate repository");
 					if (send(new_sockfd, buf, DEFAULT_SIZE + 1, 0) < 0)
 						exit(1);
 					bzero(buf, DEFAULT_SIZE + 1);
