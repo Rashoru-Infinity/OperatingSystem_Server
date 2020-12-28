@@ -1,12 +1,12 @@
-CC	= gcc
+CC	=	gcc
 CFLAGS	= -Wall -Wextra -Werror
 AR	= ar
 AFLAGS	= -rcs
-SRCS	= srcs/atomd5.c
+SRCS	= srcs/is_safestr.c srcs/strargcat.c
 OBJS	= $(SRCS:.c=.o)
 INCLUDES	= -Iincludes
-NAME	= libatomd5.a
-RM	= rm -f
+NAME	=	libstrutils.a
+RM	=	rm -f
 
 all	:	$(NAME)
 
@@ -19,9 +19,9 @@ $(NAME)	:	$(OBJS)
 clean	:
 	$(RM) $(OBJS)
 
-fclean	: clean
+fclean	:	clean
 	$(RM) $(NAME)
 
 re	:	fclean all
 
-.PHONY	:	clean fclean all re
+.PHONY	: clean fclean all re
