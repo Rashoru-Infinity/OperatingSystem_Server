@@ -1,6 +1,6 @@
 CC	= gcc
 CFLAGS	= -Wall -Wextra -Werror
-SRCS	= srcs/main.c srcs/identify.c srcs/gen_repository.c
+SRCS	= srcs/main.c srcs/admit.c srcs/gen_repository.c
 OBJS	= $(SRCS:.c=.o)
 INCLUDES	= -Iincludes -I$(SHA256)/includes -I$(READFILE)/includes -I$(STRUTILS)/includes -I$(LIBTYPES)/includes
 SHA256	= ../lib/sha256

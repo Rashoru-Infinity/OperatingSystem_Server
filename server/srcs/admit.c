@@ -2,10 +2,8 @@
 #include <stdlib.h>
 #include <string.h>
 #include "server.h"
-#include "strutils.h"
-#include "libtype.h"
 
-t_status	identify(const char *hash)
+t_status	admit(const char *hash)
 {
 	char			*home;
 	const char		*keyfile = "authorizedkey";
