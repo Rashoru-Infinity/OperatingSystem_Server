@@ -6,9 +6,9 @@
 int request(int sockfd)
 {
 	char *buf;
-	const int DEFAULT_SIZE = 64;
+	const int DEFAULT_SIZE = 256;
 
-	if (!(buf = malloc(sizeof(char) * (DEFAULT_SIZE + 1))))
+	if (!(buf = calloc(DEFAULT_SIZE + 1, sizeof(char))))
 		return (-1);
 	printf(">");
 	while (fgets(buf, DEFAULT_SIZE + 1, stdin))
@@ -18,11 +18,19 @@ int request(int sockfd)
 			free(buf);
 			break;
 		}
-		if (send(sockfd, buf, strlen(buf), 0) < 0)
+		if (send(sockfd, buf, DEFAULT_SIZE + 1, 0) < 0)
 		{
 			free(buf);
 			return (-1);
 		}
+		bzero(buf, DEFAULT_SIZE + 1);
+		if (recv(sockfd, buf, DEFAULT_SIZE + 1) < 0)
+		{
+			free(buf);
+			return (-1);
+		}
+		printf("%s\n", buf);
+		bzero(buf, DEFAULT_SIZE + 1);
 		printf(">");
 	}
 	return (0);

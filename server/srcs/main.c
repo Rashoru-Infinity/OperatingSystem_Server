@@ -9,7 +9,7 @@ int main(int argc, char **argv)
 {
 	int					sockfd;
 	char				*buf;
-	const int			DEFAULT_SIZE = 64;
+	const int			DEFAULT_SIZE = 256;
 	struct sockadr_in	serv, clnt;
 	sockelen_t			sin_siz;
 	char				*repodir;
@@ -53,27 +53,35 @@ int main(int argc, char **argv)
 			case 0:
 				printf("conect from %s: %d\n", inet_ntoa(clnt.sin_addr), ntohs(clnt.sin_port));
 				bzero(buf, DEFAULT_SIZE + 1);
-				if (recv(new_sockfd, buf, DEFAULT_SIZE, 0) < 0)
+				if (recv(new_sockfd, buf, DEFAULT_SIZE + 1, 0) < 0)
 				{
 					perror("recv\n");
 					exit(1);
 				}
+				buf[DEFAULT_SIZE] = '\0';
 				if (identify(buf) < 0)
 				{
-					send(new_sockfd, "fail", strlen(fail), 0);
+					bzero(buf, DEFAULT_SIZE + 1);
+					memcpy(buf, "fail", strlen("fail"));
+					send(new_sockfd, buf, DEFAULT_SIZE + 1, 0);
 					exit(0);
 				}
-				send(new_sockfd, "success", strlen("success"), 0);
 				bzero(buf, DEFAULT_SIZE + 1);
-				while (recv(new_sockfd, buf, DEFAULT_SIZE) > 0)
+				memcpy(buf, "success", strlen("success"), 0);
+				send(new_sockfd, buf, DEFAULT_SIZE + 1, 0);
+				bzero(buf, DEFAULT_SIZE + 1);
+				while (recv(new_sockfd, buf, DEFAULT_SIZE + 1) > 0)
 				{
+					buf[DEFAULT_SIZE] = '\0';
 					if (strcmp(buf, "exit\n") != 0)
 						break;
 					if (!(repodir = gen_repository(buf)))
 						exit(1);
-					if (send(new_sockfd, repodir, strlen(repodir)) < 0)
+					bzero(buf, DEFAULT_SIZE + 1);
+					memcpy(buf, repodir, strlen(repodir));
+					if (send(new_sockfd, buf, DEFAULT_SIZE + 1) < 0)
 						exit(1);
-						
+					bzero(buf, DEFAULT_SIZE + 1);
 				}
 			case -1:
 				exit(1);
