@@ -1,8 +1,8 @@
 #include <sys/stat.h>
 #include <stdlib.h>
 #include <string.h>
-#include "read_file/includes/read_file.h"
-#include "md5/includes/md5.h"
+#include "read_file.h"
+#include "md5.h"
 
 int	identify(const char *hash)
 {

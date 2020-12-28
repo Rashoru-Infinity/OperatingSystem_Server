@@ -3,7 +3,7 @@
 #include <fcntl.h>
 #include <sys/stat.h>
 
-static char *get_path(char *reponame)
+static char *get_path(const char *reponame)
 {
 	char	*full;
 	char	*home;
@@ -17,7 +17,7 @@ static char *get_path(char *reponame)
 	return (full);
 }
 
-static char *get_cmd(char *path)
+static char *get_cmd(const char *path)
 {
 	char *cmd;
 	const char	*git_init = "git init --bare ";
@@ -29,7 +29,7 @@ static char *get_cmd(char *path)
 	return (cmd);
 }
 
-char	*gen_repository(char *name)
+char	*gen_repository(const char *name)
 {
 	char		*path;
 	char		*cmd;

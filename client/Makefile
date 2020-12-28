@@ -1,9 +1,11 @@
 CC	= gcc
 CFLAGS	= -Wall -Wextra -Werror
-SRCS	= srcs/main.c srcs/request.c
+SRCS	= srcs/main.c srcs/request.c srcs/send_hash.c
 OBJS	= $(SRCS:.c=.o)
-INCLUDES	= -Iincludes
-LINK	= -L srcs/read_file/ -lreadfile -L srcs/md5 -latomd5 -L srcs/auth -lauth -lcrypto
+INCLUDES	= -Iincludes -I$(MD5)/includes -I$(READFILE)/includes
+MD5	= ../lib/md5
+READFILE	= ../lib/read_file
+LINK	= -L ../lib/read_file/ -lreadfile -L ../lib/md5 -latomd5 -lcrypto
 NAME	= git_client
 RM	= rm -f
 
@@ -13,21 +15,18 @@ all	:	$(NAME)
 	$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@
 
 $(NAME)	:	$(OBJS)
-	$(MAKE) -C srcs/auth all
-	$(MAKE) -C srcs/md5 all
-	$(MAKE) -C srcs/read_file all
+	$(MAKE) -C ../lib/md5 all
+	$(MAKE) -C ../lib/read_file all
 	$(CC) $(CFLAGS) $(INCLUDES) -o $(NAME) $(OBJS) $(LINK)
 
 clean	:
-	$(MAKE) -C srcs/auth clean
-	$(MAKE) -C srcs/md5 clean
-	$(MAKE) -C srcs/read_file clean
+	$(MAKE) -C ../lib/md5 clean
+	$(MAKE) -C ../lib/read_file clean
 	$(RM) $(OBJS)
 
 fclean	:	clean
-	$(MAKE) -C srcs/auth fclean
-	$(MAKE) -C srcs/md5 fclean
-	$(MAKE) -C srcs/read_file fclean
+	$(MAKE) -C ../lib/md5 fclean
+	$(MAKE) -C ../lib/read_file fclean
 	$(RM) $(NAME)
 
 re	:	fclean	all
