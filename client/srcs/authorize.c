@@ -23,7 +23,6 @@ t_status	authorize(int sockfd, const char *hash)
 		free(msg);
 		return (fail);
 	}
-	msg[status] = '\0';
 	if (strcmp(msg, "success") != 0)
 	{
 		free(msg);
