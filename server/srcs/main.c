@@ -83,7 +83,7 @@ int main(int argc, char **argv)
 					}
 					repodir = gen_repository(buf);
 					bzero(buf, DEFAULT_SIZE + 1);
-					if (repodir)
+					if (repodir && is_safestr(repodir))
 						strcpy(buf, repodir);
 					else
 						strcpy(buf, "fail to generate repository");

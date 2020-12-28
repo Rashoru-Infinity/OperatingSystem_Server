@@ -2,8 +2,10 @@
 #include <stdlib.h>
 #include <string.h>
 #include "server.h"
+#include "strutils.h"
+#include "libtype.h"
 
-int	identify(const char *hash)
+t_status	identify(const char *hash)
 {
 	char			*home;
 	const char		*keyfile = "authorizedkey";
@@ -14,38 +16,35 @@ int	identify(const char *hash)
 	const size_t	DEFAULT_SIZE = 2048;
 
 	if (!hash)
-		return (-1);
+		return (fail);
 	home = getenv("HOME");
-	if (!(full = calloc(strlen(home) + strlen(keyfile) + 2, sizeof(char))))
-		return (-1);
-	strcpy(full, home);
-	strncat(full, "/", strlen("/"));
-	strncat(full, keyfile, strlen(keyfile));
+	if (!(full = strargcat(2, home, keyfile)))
+		return (fail);
 	if (stat(full, &stat_buf))
 	{
 		free(full);
-		return (-1);
+		return (fail);
 	}
 	if (!(content = read_file(full, DEFAULT_SIZE)))
 	{
 		free(full);
-		return (-1);
+		return (fail);
 	}
 	if (!(content_hash = atoSHA256(content)))
 	{
 		free(full);
 		free(content);
-		return (-1);
+		return (fail);
 	}
 	if (strcmp(hash, content_hash) != 0)
 	{
 		free(full);
 		free(content);
 		free(content_hash);
-		return (-1);
+		return (fail);
 	}
 	free(full);
 	free(content);
 	free(content_hash);
-	return (0);
+	return (success);
 }

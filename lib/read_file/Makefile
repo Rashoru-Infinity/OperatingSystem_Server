@@ -4,7 +4,7 @@ AR	= ar
 AFLAGS	= -rcs
 SRCS	= srcs/read_file.c
 OBJS	= $(SRCS:.c=.o)
-INCLUDES	= -Iincludes
+INCLUDES	= -Iincludes -I../includes
 NAME	=	libreadfile.a
 RM	=	rm -f
 

@@ -2,8 +2,10 @@
 #define SERVER_H
 #include "read_file.h"
 #include "sha256.h"
+#include "strutils.h"
+#include "libtype.h"
 
-int		identify(const char *hash);
-char	*gen_repository(const char *name);
+t_status	identify(const char *hash);
+char		*gen_repository(const char *name);
 
 #endif

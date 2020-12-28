@@ -43,12 +43,12 @@ int main(int argc, char **argv)
 		perror("atomd5\n");
 		exit(1);
 	}
-	if (send_hash(sockfd, hash_value) < 0)
+	if (send_hash(sockfd, hash_value) == fail)
 	{
 		perror("authorize\n");
 		exit(1);
 	}
-	if (request(sockfd) < 0)
+	if (request(sockfd) == fail)
 	{
 		perror("request\n");
 		exit(1);

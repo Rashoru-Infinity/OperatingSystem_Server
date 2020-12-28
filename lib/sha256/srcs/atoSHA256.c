@@ -6,7 +6,7 @@
 
 char	*atoSHA256(const char *s)
 {
-	const int		len = 32;
+	const int		len = 256;
 	char			*value;
 	unsigned char	*buf;
 	SHA256_CTX		c;
