@@ -16,7 +16,7 @@ t_status	admit(const char *hash)
 	if (!hash)
 		return (fail);
 	home = getenv("HOME");
-	if (!(full = strargcat(2, home, keyfile)))
+	if (!(full = strargcat(3, home, "/", keyfile)))
 		return (fail);
 	if (stat(full, &stat_buf))
 	{
