@@ -2,7 +2,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include <stdio.h>
-#include "libtype.h"
+#include "client.h"
 
 t_status	request(int sockfd)
 {

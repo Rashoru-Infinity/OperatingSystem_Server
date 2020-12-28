@@ -3,7 +3,7 @@
 #include <stdlib.h>
 #include "client.h"
 
-t_status	send_hash(int sockfd, const char *hash)
+t_status	authorize(int sockfd, const char *hash)
 {
 	int			status;
 	char		*msg;
