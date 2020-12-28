@@ -4,17 +4,20 @@
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #include "server.h"
+#include <string.h>
+#include <stdlib.h>
+#include <stdio.h>
 
 int main(int argc, char **argv)
 {
-	int					sockfd;
+	int					sockfd, new_sockfd;
 	char				*buf;
 	const int			DEFAULT_SIZE = 256;
-	struct sockadr_in	serv, clnt;
-	sockelen_t			sin_siz;
+	struct sockaddr_in	serv, clnt;
+	socklen_t			sin_siz;
 	char				*repodir;
 
-	if (argc != 1)
+	if (argc != 2)
 	{
 		printf("Usage: %s port\n", argv[0]);
 		exit(1);
@@ -24,17 +27,17 @@ int main(int argc, char **argv)
 		perror("malloc\n");
 		exit(1);
 	}
-	if (sockfd = socket(PF_INET, SOCK_STREAM, 0) < 0)
+	if ((sockfd = socket(PF_INET, SOCK_STREAM, 0)) < 0)
 	{
 		perror("socket\n");
 		exit(1);
 	}
 	bzero(&serv, sizeof(struct sockaddr_in));
 	serv.sin_family = PF_INET;
-	serv.sin_prot = htons(strtol(argv[1], NULL, 10));
-	serv.sin_addr.s_addr(INADDR_ANY);
+	serv.sin_port = htons(strtol(argv[1], NULL, 10));
+	serv.sin_addr.s_addr = htonl(INADDR_ANY);
 	sin_siz = sizeof(struct sockaddr_in);
-	if (bind(sockfd, (struct sockaddr *)&serv, sizeof(serv) < 0))
+	if (bind(sockfd, (struct sockaddr *)&serv, sizeof(serv)) < 0)
 	{
 		perror("bind\n");
 		exit(1);
@@ -46,7 +49,7 @@ int main(int argc, char **argv)
 	}
 	while (1)
 	{
-		if ((new_sockfd = sccept(sockfd, (struct sockaddr *)&clnt, &sin_siz)) < 0)
+		if ((new_sockfd = accept(sockfd, (struct sockaddr *)&clnt, &sin_siz)) < 0)
 			perror("accept\n");
 		switch(fork())
 		{
@@ -67,10 +70,10 @@ int main(int argc, char **argv)
 					exit(0);
 				}
 				bzero(buf, DEFAULT_SIZE + 1);
-				memcpy(buf, "success", strlen("success"), 0);
+				strcpy(buf, "success");
 				send(new_sockfd, buf, DEFAULT_SIZE + 1, 0);
 				bzero(buf, DEFAULT_SIZE + 1);
-				while (recv(new_sockfd, buf, DEFAULT_SIZE + 1) > 0)
+				while (recv(new_sockfd, buf, DEFAULT_SIZE + 1, 0) > 0)
 				{
 					buf[DEFAULT_SIZE] = '\0';
 					if (strcmp(buf, "exit\n") != 0)
@@ -79,10 +82,11 @@ int main(int argc, char **argv)
 						exit(1);
 					bzero(buf, DEFAULT_SIZE + 1);
 					memcpy(buf, repodir, strlen(repodir));
-					if (send(new_sockfd, buf, DEFAULT_SIZE + 1) < 0)
+					if (send(new_sockfd, buf, DEFAULT_SIZE + 1, 0) < 0)
 						exit(1);
 					bzero(buf, DEFAULT_SIZE + 1);
 				}
+				break;
 			case -1:
 				exit(1);
 		}

@@ -24,7 +24,7 @@ int request(int sockfd)
 			return (-1);
 		}
 		bzero(buf, DEFAULT_SIZE + 1);
-		if (recv(sockfd, buf, DEFAULT_SIZE + 1) < 0)
+		if (recv(sockfd, buf, DEFAULT_SIZE + 1, 0) < 0)
 		{
 			free(buf);
 			return (-1);

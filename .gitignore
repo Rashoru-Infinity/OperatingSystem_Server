@@ -1,3 +1,6 @@
 *.o
 *.a
 .*.swp
+git_client
+git_server
+update
