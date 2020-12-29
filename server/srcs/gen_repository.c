@@ -2,6 +2,7 @@
 #include <string.h>
 #include <fcntl.h>
 #include <sys/stat.h>
+#include "server.h"
 
 static char *get_path(const char *reponame)
 {
@@ -9,11 +10,8 @@ static char *get_path(const char *reponame)
 	char	*home;
 
 	home = getenv("HOME");
-	if (!(full = calloc(strlen(home) * strlen(reponame) + 2, sizeof(char))))
+	if (!(full = strargcat(5, home, "/repo", "/", reponame, ".git")))
 		return (NULL);
-	strcpy(full, home);
-	strncat(full, "/repo/", strlen("/repo/"));
-	strncat(full, reponame, strlen(reponame));
 	return (full);
 }
 

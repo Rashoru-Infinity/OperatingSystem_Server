@@ -87,6 +87,7 @@ int main(int argc, char **argv)
 						strcpy(buf, repodir);
 					else
 						strcpy(buf, "fail to generate repository");
+					printf("%d\n", is_safestr(repodir));
 					if (send(new_sockfd, buf, DEFAULT_SIZE + 1, 0) < 0)
 						exit(1);
 					bzero(buf, DEFAULT_SIZE + 1);
