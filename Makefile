@@ -4,7 +4,7 @@ clean	:
 	$(MAKE) -C client clean
 	$(MAKE) -C server clean
 
-fclean	: clean
+fclean	:
 	$(MAKE) -C client fclean
 	$(MAKE) -C server fclean
 
