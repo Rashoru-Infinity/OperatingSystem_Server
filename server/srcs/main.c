@@ -75,7 +75,7 @@ int main(int argc, char **argv)
 					exit(1);
 				}
 				buf[DEFAULT_SIZE] = '\0';
-				if (admit(buf) == fail)
+				if (admit(home, buf) == fail)
 				{
 					bzero(buf, DEFAULT_SIZE + 1);
 					strcpy(buf, "fail");
