@@ -45,5 +45,7 @@ char *strargcat(int argc, ...)
 		strncat(str, arg, strlen(arg));
 	}
 	free(size);
+	va_end(ap);
+	va_end(ap_est);
 	return (str);
 }
