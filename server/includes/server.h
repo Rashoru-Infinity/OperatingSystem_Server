@@ -5,7 +5,7 @@
 #include "strutils.h"
 #include "libtype.h"
 
-t_status	admit(const char *hash);
+t_status	admit(const char *home, const char *hash);
 char		*gen_repository(const char *home, const char *name);
 
 #endif

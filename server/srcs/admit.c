@@ -3,9 +3,8 @@
 #include <string.h>
 #include "server.h"
 
-t_status	admit(const char *hash)
+t_status	admit(const char *home, const char *hash)
 {
-	char			*home;
 	const char		*keyfile = "authorizedkey";
 	char			*full;
 	struct stat		stat_buf;
@@ -15,7 +14,6 @@ t_status	admit(const char *hash)
 
 	if (!hash)
 		return (fail);
-	home = getenv("HOME");
 	if (!(full = strargcat(3, home, "/", keyfile)))
 		return (fail);
 	if (stat(full, &stat_buf))
