@@ -4,12 +4,10 @@
 #include <sys/stat.h>
 #include "server.h"
 
-static char *get_path(const char *reponame)
+static char *get_path(const char *home, const char *reponame)
 {
 	char	*full;
-	char	*home;
 
-	home = getenv("HOME");
 	if (!(full = strargcat(5, home, "/repo", "/", reponame, ".git")))
 		return (NULL);
 	return (full);
@@ -27,13 +25,13 @@ static char *get_cmd(const char *path)
 	return (cmd);
 }
 
-char	*gen_repository(const char *name)
+char	*gen_repository(const char *home, const char *name)
 {
 	char		*path;
 	char		*cmd;
 	struct stat	stat_buf;
 
-	if (!(path = get_path(name)))
+	if (!(path = get_path(home, name)))
 		return (NULL);
 	if (!stat(path, &stat_buf))
 	{

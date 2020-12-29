@@ -6,6 +6,6 @@
 #include "libtype.h"
 
 t_status	admit(const char *hash);
-char		*gen_repository(const char *name);
+char		*gen_repository(const char *home, const char *name);
 
 #endif

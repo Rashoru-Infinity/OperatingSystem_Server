@@ -7,6 +7,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include <sys/wait.h>
 
 int main(int argc, char **argv)
 {
@@ -16,6 +17,9 @@ int main(int argc, char **argv)
 	struct sockaddr_in	serv, clnt;
 	socklen_t			sin_siz;
 	char				*repodir;
+	char				*home;
+	pid_t				pid;
+	int					status;
 
 	if (argc != 2)
 	{
@@ -47,12 +51,21 @@ int main(int argc, char **argv)
 		perror("listen\n");
 		exit(1);
 	}
+	home = getenv("HOME");
+	if (daemon(0, 0) != 0)
+	{
+		perror("daemon\n");
+		exit(1);
+	}
 	while (1)
 	{
 		if ((new_sockfd = accept(sockfd, (struct sockaddr *)&clnt, &sin_siz)) < 0)
 			perror("accept\n");
-		switch(fork())
+		switch((pid = fork()))
 		{
+		case 0:
+			switch(fork())
+			{
 			case 0:
 				printf("connected from %s: %d\n", inet_ntoa(clnt.sin_addr), ntohs(clnt.sin_port));
 				bzero(buf, DEFAULT_SIZE + 1);
@@ -83,7 +96,7 @@ int main(int argc, char **argv)
 						exit(0);
 					}
 					if (is_safestr(buf))
-						repodir = gen_repository(buf);
+						repodir = gen_repository(home, buf);
 					bzero(buf, DEFAULT_SIZE + 1);
 					if (repodir)
 						strcpy(buf, repodir);
@@ -97,6 +110,13 @@ int main(int argc, char **argv)
 				break;
 			case -1:
 				exit(1);
+			default:
+				exit(0);
+			}
+		case -1:
+			exit(1);
+		default:
+			waitpid(pid, &status, 0);
 		}
 		close(new_sockfd);
 	}
