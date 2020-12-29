@@ -54,7 +54,7 @@ int main(int argc, char **argv)
 		switch(fork())
 		{
 			case 0:
-				printf("conect from %s: %d\n", inet_ntoa(clnt.sin_addr), ntohs(clnt.sin_port));
+				printf("connected from %s: %d\n", inet_ntoa(clnt.sin_addr), ntohs(clnt.sin_port));
 				bzero(buf, DEFAULT_SIZE + 1);
 				if (recv(new_sockfd, buf, DEFAULT_SIZE + 1, 0) < 0)
 				{
@@ -79,7 +79,7 @@ int main(int argc, char **argv)
 					buf[DEFAULT_SIZE] = '\0';
 					if (strcmp(buf, "exit") == 0)
 					{
-						printf("disconnected\n");
+						printf("disconnected from %s: %d\n", inet_ntoa(clnt.sin_addr), ntohs(clnt.sin_port));
 						exit(0);
 					}
 					if (is_safestr(buf))
