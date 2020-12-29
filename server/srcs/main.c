@@ -107,7 +107,7 @@ int main(int argc, char **argv)
 					bzero(buf, DEFAULT_SIZE + 1);
 					free(repodir);
 				}
-				break;
+				exit(0);
 			case -1:
 				exit(1);
 			default:
