@@ -38,7 +38,7 @@ static t_status append_buf(char **s, char *buf, size_t *curr_size, size_t *max_s
 	}
 	memcpy(&(*s)[*curr_size], buf, strlen_eof(buf));
 	*curr_size += strlen_eof(buf);
-	buf[*curr_size] = '\0';
+	(*s)[*curr_size] = '\0';
 	return (success);
 }
 
