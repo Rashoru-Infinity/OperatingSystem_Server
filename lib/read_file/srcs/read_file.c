@@ -54,7 +54,7 @@ char	*read_file(const char *file_name, size_t buffer_size)
 
 	curr_size = 0;
 	max_size = DEFAULT_SIZE;
-	if (buffer_size == SIZE_MAX)
+	if (buffer_size == 0 || buffer_size == SIZE_MAX)
 		return (NULL);
 	if (!(fp = fopen(file_name, "r")))
 	{
