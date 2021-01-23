@@ -22,7 +22,8 @@ static t_status	get_space_index(t_hash table, void *content, size_t *val)
 	initial_val = hash_val;
 	if (initial_val >= table.vla.real_size)
 		return (fail);
-	while (table.vla.contents[hash_val])
+	while (table.vla.contents[hash_val] &&
+	!(*(table.is_same))(content, table.vla.contents[hash_val]))
 	{
 		++hash_val;
 		hash_val %= table.vla.real_size;
