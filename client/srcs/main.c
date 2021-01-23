@@ -40,7 +40,7 @@ int main(int argc, char **argv)
 	}
 	if (!(hash_value = atoSHA256(content)))
 	{
-		perror("atomd5\n");
+		perror("atoSHA256\n");
 		exit(1);
 	}
 	if (authorize(sockfd, hash_value) == fail)
