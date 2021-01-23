@@ -37,7 +37,7 @@ void		array_elements_clear(t_array *arr, bool freeable)
 	}
 }
 
-void		array_clear(t_array *arr, bool freeable, bool elemfreeable)
+void		array_clear(t_array *arr, bool elemfreeable, bool freeable)
 {
 	array_elements_clear(arr, elemfreeable);
 	if (freeable)
