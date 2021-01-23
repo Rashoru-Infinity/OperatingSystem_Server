@@ -21,7 +21,7 @@ $(NAME)	:	$(OBJS)
 
 clean	:
 	$(MAKE) -C $(VLA) clean
-	$(RM) $(NAME)
+	$(RM) $(OBJS)
 
 fclean	:	clean
 	$(MAKE) -C $(VLA) fclean

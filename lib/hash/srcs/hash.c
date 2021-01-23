@@ -22,9 +22,10 @@ static t_status	get_space_index(t_hash table, void *content, size_t *val)
 	initial_val = hash_val;
 	if (initial_val >= table.vla.real_size)
 		return (fail);
-	while (table.vla.contents[hash_val] &&
-	!(*(table.is_same))(content, table.vla.contents[hash_val]))
+	while (table.vla.contents[hash_val])
 	{
+		if ((*(table.is_same))(content, table.vla.contents[hash_val]))
+			return (fail);
 		++hash_val;
 		hash_val %= table.vla.real_size;
 		if (hash_val == initial_val)
@@ -39,25 +40,28 @@ static t_status	hash_ext(t_hash *table)
 	void	**tmp;
 	size_t	index;
 	size_t	hash_val;
+	size_t	pre_size;
 
 	if (!(tmp = malloc(sizeof(void *) * table->vla.real_size)))
 		return (fail);
 	memcpy(tmp, table->vla.contents, sizeof(void *) * table->vla.real_size);
 	index = table->vla.real_size;
+	pre_size = table->vla.size;
 	if (array_extend(&(table->vla)) == fail)
 		return (fail);
+	bzero(table->vla.contents, sizeof(void *) * table->vla.real_size);
 	while (index > 0)
 	{
 		if (!tmp[--index])
 			continue;
 		if (get_space_index(*table, tmp[index], &hash_val) == fail)
 		{
-			free(tmp);
+			table->vla.size = pre_size;
+			free(table->vla.contents);
+			table->vla.contents = tmp;
 			return (fail);
 		}
 		table->vla.contents[hash_val] = tmp[index];
-		if ((*(table->is_same))(tmp[index], table->vla.contents[index]))
-			table->vla.contents[index] = NULL;
 	}
 	free(tmp);
 	return (success);
