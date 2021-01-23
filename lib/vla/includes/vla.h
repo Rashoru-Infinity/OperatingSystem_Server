@@ -10,7 +10,7 @@ typedef	struct	s_array {
 }				t_array;
 
 t_status	array_init(t_array *original, void (*func)(t_array *), size_t init_size);
-t_status	array_extend(t_array *original, void (*func)(t_array *));
+t_status	array_extend(t_array *original);
 void		array_element_clear(t_array *arr);
 void		array_clear(t_array *arr);
 

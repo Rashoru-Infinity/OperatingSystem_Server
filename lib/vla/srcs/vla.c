@@ -13,7 +13,7 @@ t_status	array_init(t_array *arr, void (*func)(t_array *), size_t contents_num)
 	return (success);
 }
 
-t_status	array_extend(t_array *original, void (*func)(t_array *))
+t_status	array_extend(t_array *original)
 {
 	void *new_array;
 
@@ -23,8 +23,6 @@ t_status	array_extend(t_array *original, void (*func)(t_array *))
 		return (fail);
 	original->content = new_array;
 	original->real_size *= 2;
-	if (func)
-		(*func)(original);
 	return (success);
 }
 
