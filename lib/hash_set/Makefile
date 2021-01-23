@@ -2,12 +2,12 @@ CC	= gcc
 CFLAGS	= -Wall -Werror -Wextra
 AR	= ar
 AFLAGS	= -rcs
-SRCS	= srcs/hash.c
+SRCS	= srcs/hash_set.c
 OBJS	= $(SRCS:.c=.o)
 INCLUDES	= -Iincludes -I../includes -I$(VLA)/includes
 VLA	= ../vla
 LINK	= -L $(VLA) -lvla
-NAME	= libhash.a
+NAME	= libhashset.a
 RM	= rm -f
 
 all	:	$(NAME)
