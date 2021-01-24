@@ -20,6 +20,7 @@ int main(int argc, char **argv)
 	char				*home;
 	pid_t				pid;
 	int					status;
+	t_hash				name_list;
 
 	if (argc != 2)
 	{
@@ -29,6 +30,11 @@ int main(int argc, char **argv)
 	if (!(buf = malloc(sizeof(char) * (DEFAULT_SIZE + 1))))
 	{
 		perror("malloc\n");
+		exit(1);
+	}
+	if (hash_init(&name_list, 10, NULL, hash_func, is_same) == fail)
+	{
+		perror("hash_init");
 		exit(1);
 	}
 	if ((sockfd = socket(PF_INET, SOCK_STREAM, 0)) < 0)
