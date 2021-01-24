@@ -9,7 +9,7 @@
 #include <stdio.h>
 #include <sys/wait.h>
 
-void send_dir(const char *home, char *buf, size_t buf_size, int fd, t_hash *namelist)
+void send_dir(const char *home, char *buf, int buf_size, int new_sockfd, t_hash *namelist)
 {
 	char	*full;
 	size_t	file_count;
@@ -22,7 +22,7 @@ void send_dir(const char *home, char *buf, size_t buf_size, int fd, t_hash *name
 	file_count = hash_size(*namelist);
 	bzero(buf, buf_size + 1);
 	memcpy(buf, &file_count, sizeof(size_t));
-	if (send(new_sockfd, buf, DEFAULT_SIZE + 1, 0) < 0)
+	if (send(new_sockfd, buf, buf_size + 1, 0) < 0)
 		exit(1);
 	index = 0;
 	bzero(buf, buf_size + 1);
@@ -31,11 +31,58 @@ void send_dir(const char *home, char *buf, size_t buf_size, int fd, t_hash *name
 		if (namelist->vla.contents[index])
 		{
 			strcpy(buf, namelist.vla.contents[index]);
-			if (send(new_sockfd, buf, DEFAULT_SIZE + 1, 0) < 0)
+			if (send(new_sockfd, buf, buf_size + 1, 0) < 0)
 				exit(1);
 		}
 	}
 	free(full);
+}
+
+void authorize(char *buf, int buf_size, int new_sockfd, const char *home)
+{	
+	bzero(buf, buf_size + 1);
+	if (recv(new_sockfd, buf, buf_size + 1, 0) < 0)
+	{
+		perror("recv\n");
+		exit(1);
+	}
+	buf[buf_size] = '\0';
+	if (admit(home, buf) == fail)
+	{
+		bzero(buf, buf_size + 1);
+		strcpy(buf, "fail");
+		send(new_sockfd, buf, buf_size + 1, 0);
+		exit(0);
+	}
+	bzero(buf, buf_size + 1);
+	strcpy(buf, "success");
+	if (send(new_sockfd, buf, buf_size + 1, 0) < 0)
+		exit(1);
+}
+
+void main_communication(char *buf, int buf_size, int new_sockfd, char *home)
+{
+	char *repodir;
+
+	bzero(buf, buf_size + 1);
+	while (recv(new_sockfd, buf, buf_size + 1, 0) > 0)
+	{
+		repodir = NULL;
+		buf[buf_size] = '\0';
+		if (strcmp(buf, "exit") == 0)
+			exit(0);
+		if (is_safestr(buf))
+			repodir = gen_repository(home, buf);
+		bzero(buf, buf_size + 1);
+		if (repodir)
+			strcpy(buf, repodir);
+		else
+			strcpy(buf, "fail to generate repository");
+		if (send(new_sockfd, buf, buf_size + 1, 0) < 0)
+			exit(1);
+		bzero(buf, buf_size + 1);
+		free(repodir);
+	}
 }
 
 int main(int argc, char **argv)
@@ -45,11 +92,11 @@ int main(int argc, char **argv)
 	const int			DEFAULT_SIZE = 256;
 	struct sockaddr_in	serv, clnt;
 	socklen_t			sin_siz;
-	char				*repodir;
 	char				*home;
 	pid_t				pid;
 	int					status;
 	t_hash				name_list;
+	int					pipefd[2];
 
 	if (argc != 2)
 	{
@@ -92,6 +139,11 @@ int main(int argc, char **argv)
 		perror("daemon\n");
 		exit(1);
 	}
+	if (pipe(pipefd) == -1)
+	{
+		perror("pipe\n");
+		exit(1);
+	}
 	while (1)
 	{
 		if ((new_sockfd = accept(sockfd, (struct sockaddr *)&clnt, &sin_siz)) < 0)
@@ -102,48 +154,9 @@ int main(int argc, char **argv)
 			switch(fork())
 			{
 			case 0:
-				printf("connected from %s: %d\n", inet_ntoa(clnt.sin_addr), ntohs(clnt.sin_port));
-				bzero(buf, DEFAULT_SIZE + 1);
-				if (recv(new_sockfd, buf, DEFAULT_SIZE + 1, 0) < 0)
-				{
-					perror("recv\n");
-					exit(1);
-				}
-				buf[DEFAULT_SIZE] = '\0';
-				if (admit(home, buf) == fail)
-				{
-					bzero(buf, DEFAULT_SIZE + 1);
-					strcpy(buf, "fail");
-					send(new_sockfd, buf, DEFAULT_SIZE + 1, 0);
-					exit(0);
-				}
-				bzero(buf, DEFAULT_SIZE + 1);
-				strcpy(buf, "success");
-				if (send(new_sockfd, buf, DEFAULT_SIZE + 1, 0) < 0)
-					exit(1);
+				authorize(buf, size, new_sockfd, home);
 				send_dir(home, buf, DEFAULT_SIZE, new_sockfd, namelist);
-				bzero(buf, DEFAULT_SIZE + 1);
-				while (recv(new_sockfd, buf, DEFAULT_SIZE + 1, 0) > 0)
-				{
-					repodir = NULL;
-					buf[DEFAULT_SIZE] = '\0';
-					if (strcmp(buf, "exit") == 0)
-					{
-						printf("disconnected from %s: %d\n", inet_ntoa(clnt.sin_addr), ntohs(clnt.sin_port));
-						exit(0);
-					}
-					if (is_safestr(buf))
-						repodir = gen_repository(home, buf);
-					bzero(buf, DEFAULT_SIZE + 1);
-					if (repodir)
-						strcpy(buf, repodir);
-					else
-						strcpy(buf, "fail to generate repository");
-					if (send(new_sockfd, buf, DEFAULT_SIZE + 1, 0) < 0)
-						exit(1);
-					bzero(buf, DEFAULT_SIZE + 1);
-					free(repodir);
-				}
+				main_communication(buf, buf_size, new_sockfd, home);
 				exit(0);
 			case -1:
 				exit(1);
