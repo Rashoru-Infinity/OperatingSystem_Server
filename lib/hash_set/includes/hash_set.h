@@ -15,5 +15,6 @@ t_status	hash_remove(t_hash *table, void *content, bool freeable);
 void		hash_elements_clear(t_hash *table, bool freeable);
 void		hash_clear(t_hash *table, bool elemfreeable, bool freeable);
 int			hash_contains(t_hash table, void *content);
+size_t		hash_size(t_hash table);
 
 #endif

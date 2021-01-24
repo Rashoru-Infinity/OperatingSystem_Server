@@ -153,3 +153,16 @@ int		hash_contains(t_hash table, void *content)
 		return (fail);
 	return (search_content(table, content, NULL) == success);
 }
+
+size_t	hash_size(t_hash table)
+{
+	size_t	size;
+
+	size = 0;
+	while (--table.vla.real_size > 0)
+	{
+		if (table.vla.contents[table.vla.real_size])
+			++size;
+	}
+	return (size);
+}

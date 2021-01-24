@@ -9,6 +9,35 @@
 #include <stdio.h>
 #include <sys/wait.h>
 
+void send_dir(const char *home, char *buf, size_t buf_size, int fd, t_hash *namelist)
+{
+	char	*full;
+	size_t	file_count;
+	size_t	index;
+
+	if (!home || !buf || !namelist || !(full = strargcat(2, home, "/repo")))
+		exit(1);
+	if (check_dir(namelist, full) == fail)
+		exit(1);
+	file_count = hash_size(*namelist);
+	bzero(buf, buf_size + 1);
+	memcpy(buf, &file_count, sizeof(size_t));
+	if (send(new_sockfd, buf, DEFAULT_SIZE + 1, 0) < 0)
+		exit(1);
+	index = 0;
+	bzero(buf, buf_size + 1);
+	while (index < namelist->vla.real_size)
+	{
+		if (namelist->vla.contents[index])
+		{
+			strcpy(buf, namelist.vla.contents[index]);
+			if (send(new_sockfd, buf, DEFAULT_SIZE + 1, 0) < 0)
+				exit(1);
+		}
+	}
+	free(full);
+}
+
 int main(int argc, char **argv)
 {
 	int					sockfd, new_sockfd;
@@ -90,7 +119,9 @@ int main(int argc, char **argv)
 				}
 				bzero(buf, DEFAULT_SIZE + 1);
 				strcpy(buf, "success");
-				send(new_sockfd, buf, DEFAULT_SIZE + 1, 0);
+				if (send(new_sockfd, buf, DEFAULT_SIZE + 1, 0) < 0)
+					exit(1);
+				send_dir(home, buf, DEFAULT_SIZE, new_sockfd, namelist);
 				bzero(buf, DEFAULT_SIZE + 1);
 				while (recv(new_sockfd, buf, DEFAULT_SIZE + 1, 0) > 0)
 				{
