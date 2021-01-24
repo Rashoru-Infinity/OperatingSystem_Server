@@ -1,4 +1,8 @@
 # OperatingSystem_Server
+This branch isn't complete so it won't work.  
+If you want to check the working version, you should check the following.  
+<https://github.com/Rashoru-Infinity/OperatingSystem_Server/tree/Version1.0>  
+  
 Created as part of a university OS class.  
 A program that creates a git remote repository on a host machine in a LAN.  
 The server-side program becomes a daemon process and continues to run.  
