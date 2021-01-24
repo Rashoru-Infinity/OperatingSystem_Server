@@ -1,6 +1,5 @@
 #include "server.h"
 #include <dirent.h>
-#include <stdlib.h>
 
 t_status	check_dir(t_hash *file_list, const char *path)
 {
